@@ -19,7 +19,7 @@ uint16_t *ptr_mem(
  * (vous pouvez aussi ajouter des paramètres pour permettre de préciser
  * la couleur du caractère, celle du fond ou le bit de clignotement)
  */
-void ecrit_car(uint32_t lig, uint32_t col, chqr c);
+void ecrit_car(uint32_t lig, uint32_t col, char c, uint8_t b_clignote, uint8_t couleur_c, uint8_t couleur_fond);
 
 
 /* Clears the screen
@@ -31,8 +31,10 @@ void ecrit_car(uint32_t lig, uint32_t col, chqr c);
 void efface_ecran(void);
 
 /* Placer le curseur à la position donnée */
-void place_curseur(uint32_t lig; uint32_t col);
+void place_curseur(uint32_t lig, uint32_t col);
 
+/* Recuperer la position du curseur */
+uint16_t getCursorPosition();
 
 /* Taiter un caractère donné (l’afficher si c’est un caractère normal ou qui implante l’effet voulu si c’est   un caractère de contrôle) */
 void traite_car(char c);
