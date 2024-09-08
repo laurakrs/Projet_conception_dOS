@@ -9,12 +9,12 @@
 #define NUM_LIN 25
 
 // Caracteres
-#define SPACE 32
-#define BS 8
-#define HT 9
-#define LF 10
-#define FF 12
-#define CR 13
+#define SPACE 0x20
+#define BS 0x08
+#define HT 0x09
+#define LF 0x0A
+#define FF 0x0C
+#define CR 0x0D
 
 
 // Couleurs
@@ -58,11 +58,7 @@ uint16_t *ptr_mem(uint32_t lig, uint32_t col){
 	}
 	
 	// l’adresse de début est 0xB8000
-	
-	uint16_t *adr; // address to be calculated and returned
-	adr = ADR_DEBUT + 2 * (lig * NUM_COL + col);
-	
-	return adr; 
+	return (uint16_t *) ADR_DEBUT + 2 * (lig * NUM_COL + col);
 }
 
 
@@ -82,9 +78,9 @@ void ecrit_car(uint32_t lig, uint32_t col, char c, uint8_t b_clignote, uint8_t c
 		return;
 	}
 
-	uint8_t format = b_clignote << 7  | couleur_fond << 4  | couleur_c;
+	uint8_t format = (b_clignote << 7) | (couleur_fond << 4)  | (couleur_c);
 	
-	*pos = (format << 8) | c;
+	*pos = (format << 8) | (uint8_t) c;
 
 }
 
@@ -116,36 +112,39 @@ Cette position doit être envoyée en deux temps à la carte vidéo
 void place_curseur(uint32_t lig, uint32_t col){
 
 	uint16_t pos = col + lig * NUM_COL;
-
-	uint8_t posHaute = pos >> 8;
-    uint8_t posBasse = pos;
 	
 	// 1. envoyer la commande 0x0F sur le port de commande pour indiquer à la carte que l’on va envoyer
 	// la partie basse de la position du curseur
 	outb(0x0F, PORT_COMMANDE); 
 
 	// 2. envoyer cette partie basse sur le port de données ;
-	outb(posBasse, PORT_DONNEES);
+	outb((uint8_t)(pos & 0xFF), PORT_DONNEES);
 
 	// 3. envoyer la commande 0x0E sur le port de commande pour signaler qu’on envoie maintenant la
     // partie haute ;
 	outb(0x0E, PORT_COMMANDE);
 
 	// 4. envoyer la partie haute de la position sur le port de données.
-	outb(posHaute, PORT_DONNEES);
+	outb((uint8_t)(pos >> 8) & 0xFF, PORT_DONNEES);
  
 }
 
 /* Get current cursor position*/
 uint16_t getCursorPosition(){
-	uint16_t pos;
+	uint16_t pos = 0;
 
-
+	// partie basse
+	outb(0x0F,PORT_COMMANDE);
+	pos |= inb(PORT_DONNEES);
+	
+	// partie haute
+	outb(0x0E,PORT_COMMANDE);
+	pos |= (inb(PORT_DONNEES) << 8);
 
 	return pos;
 }
 
-/*On considère dans ce TP les caractères de la table ASCII (man ascii), qui sont numérotés de 0 à 127
+/*On considère dans ce TP les caractères de la table ASCII (man ascii), qui sont numéros de 0 à 127
 inclus. Les caractères dont le code est supérieur à 127 (accents, ...) seront ignorés.
 Les caractères de code ASCII 32 à 126 doivent être affichés 
 en les plaçant à la position actuelle du curseur clignotant 
@@ -157,14 +156,14 @@ Les caractères de 0 à 31, ainsi que le caractère 127 sont des caractères de 
 /* Taiter un caractère donné (l’afficher si c’est un caractère normal ou qui implante l’effet voulu si c’est un caractère de contrôle) */
 void traite_car(char c){
 
-	if(c < 127){
+	if(c < 0 || c > 127){
 		return;
 	}
 
 	uint16_t pos = getCursorPosition();
 
 	// get line and column
-	uint32_t lig = pos / NUM_LIN;
+	uint32_t lig = pos / NUM_COL;
 	uint32_t col = pos % NUM_COL;
 
 
@@ -174,33 +173,47 @@ void traite_car(char c){
 		if (col >= NUM_COL){
 			col = 0;
 			lig++;
+			if(lig >= NUM_LIN){
+				defilement();
+				lig = NUM_LIN -1;
+			}
 		}
 	} else {
+		// Control
 		switch(c){
-			case BS: 
+			case BS: // Backspace
 				// Recule le curseur d’une colonne (si colonne ̸= 0)
 				if(col > 0){
 					col--;
+				}else if (lig > 0){
+					lig--;
+					col = NUM_COL - 1;
 				}
 				break;
-			case HT: 
+			case HT: // Horizontal tab
 				// Avance a la prochaine tabulation (colonnes 0,8,16, ...,72,79)
-				place_curseur(lig, col*8);
-				break;
-			case LF:
-				// Deplace le curseur sur la ligne suivante, colonne 0
-				if(lig < NUM_LIN-1){
-					lig++;
-					col = 0;
+				col = ((col / 8) + 1) * 8;
+				if (col >= NUM_COL){
+					col = NUM_COL - 1;
 				}
 				break;
-			case FF:
+			case LF: // Line Feed
+				// Deplace le curseur sur la ligne suivante, colonne 0
+				if(lig < NUM_LIN - 1){
+					lig++;
+				} else { // Derniere ligne
+					defilement();
+					lig = NUM_LIN - 1;
+				}
+				col = 0;
+				break;
+			case FF: // Form Feed
 				// Efface l'ecran et place le curseur sur la collone 0 de la ligne 0
 				efface_ecran();
 				lig = 0;
 				col = 0; 
 				break;
-			case CR:
+			case CR: // Carriage Return
 				// Deplace le curseur sur la ligne actuelle, colonne 0
 				col = 0;
 				break;
@@ -210,24 +223,16 @@ void traite_car(char c){
 		}
 	}
 
-	if(lig >= NUM_LIN){
-		defilement();
-		lig = NUM_LIN - 1;
-	}
-
 	place_curseur(lig, col);
 }
 
 /* Faire remonter d’une ligne l’affichage à l’écran (il pourra être judicieux d’utiliser memmove définie dans string.h pour cela) ; */
 void defilement(void){
 
-	void *p = 5997;
-	void *p1 = 5997;
-	size_t size = sizeof(*p);
-
-	// void *memmove(void *dest, const void *src, size_t n);
-
-	*memmove(p, p1, size);
+	memmove((void *)ADR_DEBUT, (void *)(ADR_DEBUT + 2*NUM_COL),2*NUM_COL*(NUM_LIN-1));
+	for (uint32_t col = 0; col < NUM_COL; col++){
+		ecrit_car(NUM_LIN-1, col, SPACE, FALSE, BLANC, NOIR);
+	}
 
 }
 
