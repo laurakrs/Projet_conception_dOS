@@ -2,45 +2,6 @@
 
  */
 
-#define FALSE ((unsigned char) 0)
-#define TRUE ((unsigned char) 1)
-#define ADR_DEBUT 0xB000
-#define NUM_COL 80
-#define NUM_LIN 25
-
-// Caracteres
-#define SPACE 0x20
-#define BS 0x08
-#define HT 0x09
-#define LF 0x0A
-#define FF 0x0C
-#define CR 0x0D
-
-
-// Couleurs
-#define NOIR 0
-#define BLEU 1
-#define VERT 2
-#define CYAN 3
-#define ROUGE 4
-#define MAGENTA 5
-#define MARRON 6
-#define GRIS 7
-
-// seulement pour le texte
-#define GRIS_FONCE 8
-#define BLEU_CLAIR 9
-#define VERT_CLAIR 10
-#define CYAN_CLAIR 11
-#define ROUGE_CLAIR 12
-#define MAGENTA_CLAIR 13
-#define JAUNE 14
-#define BLANC 15
-
-// Port de commande gérant la position du curseur: 0x3D4 
-// Port de données associé: 0x3D5. 
-#define PORT_COMMANDE 0x3D4
-#define PORT_DONNEES 0x3D5
 
 
 #include "stdarg.h"
@@ -78,9 +39,11 @@ void ecrit_car(uint32_t lig, uint32_t col, char c, uint8_t b_clignote, uint8_t c
 		return;
 	}
 
-	uint8_t format = (b_clignote << 7) | (couleur_fond << 4)  | (couleur_c);
+	// uint8_t format = (b_clignote << 7) | (couleur_fond << 4)  | (couleur_c);
 	
-	*pos = (format << 8) | (uint8_t) c;
+	// *pos = (format << 8) | (uint8_t) c;
+
+	*pos = (BLANC << 12) | (NOIR << 8) | c;
 
 }
 

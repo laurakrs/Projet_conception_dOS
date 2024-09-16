@@ -19,6 +19,7 @@ uint32_t fact(uint32_t n)
 
 void kernel_start(void)
 {
+    printf("Hello world !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     uint32_t x = fact(5);
     // quand on saura gerer l'ecran, on pourra afficher x
     (void)x;
@@ -28,6 +29,6 @@ void kernel_start(void)
         hlt();
     }
 
-    printf("Hello world !");
+
 }
 
