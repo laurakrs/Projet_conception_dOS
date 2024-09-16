@@ -97,7 +97,6 @@ void efface_ecran() {
 			ecrit_car(lig, col, SPACE, FALSE, BLANC, NOIR);
 		}
 	}
-
 }
 
 /*
@@ -228,12 +227,10 @@ void traite_car(char c){
 
 /* Faire remonter d’une ligne l’affichage à l’écran (il pourra être judicieux d’utiliser memmove définie dans string.h pour cela) ; */
 void defilement(void){
-
 	memmove((void *)ADR_DEBUT, (void *)(ADR_DEBUT + 2*NUM_COL),2*NUM_COL*(NUM_LIN-1));
 	for (uint32_t col = 0; col < NUM_COL; col++){
 		ecrit_car(NUM_LIN-1, col, SPACE, FALSE, BLANC, NOIR);
 	}
-
 }
 
 
