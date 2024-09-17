@@ -39,11 +39,9 @@ void ecrit_car(uint32_t lig, uint32_t col, char c, uint8_t b_clignote, uint8_t c
 		return;
 	}
 
-	// uint8_t format = (b_clignote << 7) | (couleur_fond << 4)  | (couleur_c);
+	uint8_t format = (b_clignote << 7) | (couleur_fond << 4)  | (couleur_c);
 	
-	// *pos = (format << 8) | (uint8_t) c;
-
-	*pos = (BLANC << 12) | (NOIR << 8) | c;
+	*pos = (format << 8) | (uint8_t) c;
 
 }
 
