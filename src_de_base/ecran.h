@@ -10,7 +10,7 @@
 
 #define FALSE ((unsigned char) 0)
 #define TRUE ((unsigned char) 1)
-#define ADR_DEBUT 0xB000
+#define ADR_DEBUT 0xB8000
 #define NUM_COL 80
 #define NUM_LIN 25
 

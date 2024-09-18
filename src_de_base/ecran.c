@@ -19,7 +19,7 @@ uint16_t *ptr_mem(uint32_t lig, uint32_t col){
 	}
 	
 	// l’adresse de début est 0xB8000
-	return (uint16_t *) ADR_DEBUT + 2 * (lig * NUM_COL + col);
+	return (uint16_t *) (ADR_DEBUT + 2 * (lig * NUM_COL + col));
 }
 
 
