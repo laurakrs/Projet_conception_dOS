@@ -1,6 +1,7 @@
 #include <cpu.h>
 #include <inttypes.h>
 #include <stdio.h>
+#include <timer.h>
 
 
 // on peut s'entrainer a utiliser GDB avec ce code de base
@@ -23,17 +24,19 @@ void kernel_start(void)
 
     // TIMER
     // initialisations
-    // ...
+    //...
+
+
 
     // On pourra donc initialiser la table des vecteurs d’interruption en appelant simplement 
-    // init_traitant_IT(32, traitant_IT_32);
+    init_traitant_IT(32, traitant_IT_32);
 
 
     // démasquage des interruptions externes
-    // sti();
+    sti();
 
 
-    ecrit_temps("HH:MM:SS", 8); 
+    ecrit_temps("HH:MM:SS",8); 
 
     printf("Bonjour le monde !\n");
     uint32_t x = fact(5);
