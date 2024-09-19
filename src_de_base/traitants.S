@@ -16,4 +16,3 @@ traitant_IT_32:
     popl %eax
 # fin du traitant
     iret
-

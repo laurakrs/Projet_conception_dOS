@@ -21,6 +21,7 @@
 
 #include <stddef.h>
 #include <string.h>
+#include <inttypes.h>
 
 void *memccpy(void *dst, const void *src, int c, size_t n)
 {
