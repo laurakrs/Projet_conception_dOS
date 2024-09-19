@@ -52,7 +52,7 @@ void traitant_IT_32(void);
 void regler_freq();
 
 // 
-void masque_IRQ(uint32_t num_IRQ, bool masque)
+// void masque_IRQ(uint32_t num_IRQ, bool masque)
 
 
 

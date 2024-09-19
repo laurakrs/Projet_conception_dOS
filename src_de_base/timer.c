@@ -81,7 +81,7 @@ void regler_freq(){
     outb((QUARTZ / CLOCKFREQ) & 0xFF, PORT_DONNEES_FREQ);
 
     // on envoie ensuite les 8 bits de poids forts de la valeur de réglage sur le même port 0x40.
-     outb((QUARTZ / CLOCKFREQ) & 0xFF, PORT_DONNEES_FREQ);
+     outb((uint8_t)((QUARTZ / CLOCKFREQ)  >> 8) & 0xFF, PORT_DONNEES_FREQ);
 
 }
 
