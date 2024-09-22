@@ -22,21 +22,18 @@ uint32_t fact(uint32_t n)
 void kernel_start(void)
 {
 
-    // TIMER
+    
     // initialisations
-    //...
-
-
-
     // On pourra donc initialiser la table des vecteurs d’interruption en appelant simplement 
     init_traitant_IT(32, traitant_IT_32);
+    efface_ecran();
 
 
     // démasquage des interruptions externes
     sti();
 
 
-    ecrit_temps("HH:MM:SS",8); 
+    // ecrit_temps("HH:MM:SS",9); 
 
     printf("Bonjour le monde !\n");
     uint32_t x = fact(5);
