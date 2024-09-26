@@ -143,7 +143,7 @@ void traite_car(char c){
 		// Control
 		switch(c){
 			case BS: // Backspace
-				// Recule le curseur d’une colonne (si colonne ̸= 0)
+				// Recule le curseur d’une colonne (si colonne != 0)
 				if(col > 0){
 					col--;
 				}else if (lig > 0){
