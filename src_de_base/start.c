@@ -26,9 +26,9 @@ void kernel_start(void)
     
     // initialisations
     // On pourra donc initialiser la table des vecteurs d’interruption en appelant simplement 
-    /*regler_freq();
+    regler_freq();
     init_traitant_IT(32, traitant_IT_32);
-    masque_IRQ(0,0);*/
+    masque_IRQ(0,0);
 
 
     // efface_ecran();
@@ -40,7 +40,7 @@ void kernel_start(void)
 
     // ecrit_temps("HH:MM:SS",9); 
 
-    printf("Bonjour le monde !\n");
+    // printf("Bonjour le monde !\n");
     // uint32_t x = fact(5);
     // quand on saura gerer l'ecran, on pourra afficher x
     // (void)x;
