@@ -10,8 +10,12 @@
 #include <inttypes.h>
 #include "timer.h"
 #include <ecran.h>
+#include <stdio.h>
 
 
+
+// variable global 
+static int ticks = 0; 
 
 
 /*Ecrit_temps prend en paramètre une chaine de caractères (ainsi que sa

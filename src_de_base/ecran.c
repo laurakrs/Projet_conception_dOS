@@ -72,6 +72,7 @@ Cette position doit être envoyée en deux temps à la carte vidéo
 void place_curseur(uint32_t lig, uint32_t col){
 
 	uint16_t pos = col + lig * NUM_COL;
+
 	
 	// 1. envoyer la commande 0x0F sur le port de commande pour indiquer à la carte que l’on va envoyer
 	// la partie basse de la position du curseur
@@ -201,5 +202,3 @@ void console_putbytes(const char *s, int len){
 		traite_car(s[i]);
 	}
 }
-
-

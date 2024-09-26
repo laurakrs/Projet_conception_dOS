@@ -1,6 +1,7 @@
 #include <cpu.h>
 #include <inttypes.h>
 #include <stdio.h>
+#include <ecran.h>
 #include <timer.h>
 
 
@@ -25,8 +26,12 @@ void kernel_start(void)
     
     // initialisations
     // On pourra donc initialiser la table des vecteurs d’interruption en appelant simplement 
+    regler_freq();
     init_traitant_IT(32, traitant_IT_32);
-    efface_ecran();
+    masque_IRQ(0,0);
+
+
+    // efface_ecran();
 
 
     // démasquage des interruptions externes
@@ -35,11 +40,20 @@ void kernel_start(void)
 
     // ecrit_temps("HH:MM:SS",9); 
 
-    printf("Bonjour le monde !\n");
-    uint32_t x = fact(5);
+    // printf("Bonjour le monde !\n");
+    // uint32_t x = fact(5);
     // quand on saura gerer l'ecran, on pourra afficher x
-    (void)x;
-    printf("5! = %" PRIu16 "\n",x);
+    // (void)x;
+    //printf("5! = %" PRIu16 "\n",x);
+
+
+
+    // tester LF
+    /*
+    for(int i = 0; i < 25; i++){
+        printf("\n");
+    }*/
+
     // on ne doit jamais sortir de kernel_start
 
     // boucle d’attente

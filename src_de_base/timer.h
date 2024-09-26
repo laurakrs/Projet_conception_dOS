@@ -37,8 +37,6 @@
 
 #define LEN_TEMPS 9
 
-// variable global 
-static int ticks = 0; 
 
 /*Ecrit_temps prend en paramètre une chaine de caractères (ainsi que sa
 taille) et l’affiche en haut à droite de l’écran : c’est cette fonction qui sera appelée par le traitant
@@ -59,7 +57,7 @@ void traitant_IT_32(void);
 void regler_freq();
 
 // 
-void masque_IRQ(uint32_t num_IRQ, bool masque)
+void masque_IRQ(uint32_t num_IRQ, bool masque);
 
 
 
