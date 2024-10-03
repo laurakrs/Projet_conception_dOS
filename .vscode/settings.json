@@ -3,6 +3,7 @@
         "stdio.h": "c",
         "inttypes.h": "c",
         "timer.h": "c",
-        "process.h": "c"
+        "process.h": "c",
+        "ecran.h": "c"
     }
 }

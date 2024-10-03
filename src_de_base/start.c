@@ -29,17 +29,22 @@ uint32_t fact(uint32_t n)
 }
 
 void idle(void){
-    printf("[idle] je tente de passer la main a proc1...\n");
-
-    // Elle prend 2 paramètres de types pointeurs sur des entiers : il s’agit en fait des adresses des zones de sauvegarde des registres des contextes de l’ancien processus et du nouveau.
-
-    ctx_sw(table_proc[0].tab_reg, table_proc[1].tab_reg);
-
-}
-void proc1(void){
-    printf("[proc1] idle ma donne la main\n");
-    printf("[proc1] jarrete le systeme\n");
+    for (int i = 0; i < 3; i++) {
+        printf("[idle] je tente de passer la main a proc1...\n");
+        ctx_sw(table_proc[0].tab_reg, table_proc[1].tab_reg);
+        printf("[idle] proc1 ma redonne la main\n");
+    }
+    printf("[idle] je bloque le systeme\n");
     hlt();
+}
+
+void proc1(void){
+    for(;;){
+        printf("[proc1] idle ma donne la main\n");
+        printf("[proc1] je tente de lui la redonner...\n");
+        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);
+    }
+
 }
 
 void kernel_start(void)
