@@ -1,9 +1,12 @@
 #include <cpu.h>
 #include <inttypes.h>
 #include <stdio.h>
+#include <string.h>
 #include <ecran.h>
 #include <timer.h>
 #include <process.h>
+
+
 
 
 
@@ -23,6 +26,20 @@ uint32_t fact(uint32_t n)
         res = fact(n - 1) * n;
     }
     return res;
+}
+
+void idle(void){
+    printf("[idle] je tente de passer la main a proc1...\n");
+
+    // Elle prend 2 paramètres de types pointeurs sur des entiers : il s’agit en fait des adresses des zones de sauvegarde des registres des contextes de l’ancien processus et du nouveau.
+
+    ctx_sw(table_proc[0].tab_reg, table_proc[1].tab_reg);
+
+}
+void proc1(void){
+    printf("[proc1] idle ma donne la main\n");
+    printf("[proc1] jarrete le systeme\n");
+    hlt();
 }
 
 void kernel_start(void)
@@ -45,12 +62,12 @@ void kernel_start(void)
     // IDLE
     table_proc[0].pid = 0;
     table_proc[0].etat = ELU;
-    table_proc[0].nom = "idle";
+    strcpy(table_proc[0].nom,"idle");
 
     // PROC 1 
     table_proc[1].pid = 1;
     table_proc[1].etat = ACTIVABLE;
-    table_proc[1].nom = "proc1";
+    strcpy(table_proc[1].nom,"proc1");
 
     // — pour proc1 la case de la zone de sauvegarde des registres correspondant à %esp doit pointer sur le sommet de pile, 
     // pas le début de la zone mémoire allouée, mais la fin de cette zone (lorsqu’on empile des valeurs, on descend vers les adresses décroissantes)
@@ -112,13 +129,13 @@ void kernel_start(void)
     // on ne doit jamais sortir de kernel_start
 
     // boucle d’attente
-    while (1) {
+    // while (1) {
         // cette fonction arrete le processeur
 
 
         // : il est  essentiel que les interruptions soient démasquees avant d’appeler cette fonction.
-        hlt();
-    }
+       // hlt();
+    //}
 
 }
 

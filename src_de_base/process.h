@@ -18,7 +18,7 @@ typedef struct  {
     // le pid du processus, sous la forme d’un entier (signe -1 en cas derreur)
     uint32_t pid;
     // un chaine de caractères avec une taille maximum fixée ;
-    char* nom;
+    char nom[50];
     // dans ce premier exemple, il n’y a que 2 états possibles : élu ou activable, 
     enum ETAT etat;
 
@@ -40,5 +40,6 @@ void idle(void);
 void proc1(void);
 
 // assembly
-void ctx_sw(void);
+// Elle prend 2 paramètres de types pointeurs sur des entiers : il s’agit en fait des adresses des zones de sauvegarde des registres des contextes de l’ancien processus et du nouveau.
+void ctx_sw(uint32_t* adr_anc, uint32_t* adr_nouv);
 
