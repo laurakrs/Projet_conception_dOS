@@ -1,4 +1,4 @@
-#include <inttypes.h>
+#include <inttypes.h>       
 
 
 #define N_REG 5
@@ -42,4 +42,12 @@ void proc1(void);
 // assembly
 // Elle prend 2 paramètres de types pointeurs sur des entiers : il s’agit en fait des adresses des zones de sauvegarde des registres des contextes de l’ancien processus et du nouveau.
 void ctx_sw(uint32_t* adr_anc, uint32_t* adr_nouv);
+
+void ordonnance(void);
+
+int32_t mon_pid(void);
+
+char *mon_nom(void);
+
+
 

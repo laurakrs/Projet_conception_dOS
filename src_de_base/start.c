@@ -5,10 +5,11 @@
 #include <ecran.h>
 #include <timer.h>
 #include <process.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-
-
-
+pid_t getpid(void);
+pid_t getppid(void);
 
 // on peut s'entrainer a utiliser GDB avec ce code de base
 // par exemple afficher les valeurs de x, n et res avec la commande display
@@ -29,22 +30,62 @@ uint32_t fact(uint32_t n)
 }
 
 void idle(void){
+
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            ordonnance();
+        }
+    /*
     for (int i = 0; i < 3; i++) {
         printf("[idle] je tente de passer la main a proc1...\n");
         ctx_sw(table_proc[0].tab_reg, table_proc[1].tab_reg);
         printf("[idle] proc1 ma redonne la main\n");
     }
     printf("[idle] je bloque le systeme\n");
-    hlt();
+    hlt();*/
 }
 
 void proc1(void){
     for(;;){
+        
+        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        ordonnance();
+    }
+        /*
         printf("[proc1] idle ma donne la main\n");
         printf("[proc1] je tente de lui la redonner...\n");
-        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);
+        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);*/
     }
 
+int32_t mon_pid(void){
+    return getpid();
+}
+
+char *mon_nom(void){
+    uint32_t pid = getpid();
+    for(int i; i < N_PROC; i++){
+        if (table_proc[i].pid == pid){
+            return table_proc[i].nom;
+        }
+    }
+    return "f";   
+}
+
+void ordonnance(void){
+    uint32_t pid = mon_pid();
+    int index = -1;
+    for(int i; i < N_PROC; i++){
+        if (table_proc[i].pid == pid){
+            index = i;
+            break;
+        }
+    }
+    if(index == 0){
+        index = 1;
+    }else{
+        index = 0;
+    } 
+    ctx_sw(table_proc[index].tab_reg, table_proc[index].tab_reg);
 }
 
 void kernel_start(void)

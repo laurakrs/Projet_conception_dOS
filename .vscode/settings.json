@@ -4,6 +4,10 @@
         "inttypes.h": "c",
         "timer.h": "c",
         "process.h": "c",
-        "ecran.h": "c"
+        "ecran.h": "c",
+        "string.h": "c",
+        "cpu.h": "c",
+        "unistd.h": "c",
+        "types.h": "c"
     }
 }
