@@ -8,6 +8,7 @@
         "string.h": "c",
         "cpu.h": "c",
         "unistd.h": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "tinyalloc.h": "c"
     }
 }

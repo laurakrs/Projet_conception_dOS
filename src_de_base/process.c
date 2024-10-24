@@ -23,7 +23,7 @@
 
  */
 
-PROCESS table_proc[N_PROC];
+PROCESS* table_proc[N_PROC];
 
 void idle(void){
 
@@ -91,6 +91,21 @@ void ordonnance(void){
     ctx_sw(table_proc[index].tab_reg, table_proc[next].tab_reg);
     // ctx_sw(table_proc[0].tab_reg, table_proc[1].tab_reg);
     // ctx_sw(table_proc[index].tab_reg, table_proc[next].tab_reg);
+}
+
+int32_t cree_processus(void (*code)(void), char *nom){
+    PROCESS *new = (PROCESS *) malloc(sizeof(PROCESS));
+
+
+    for(int i = 0; i < N_PROC; ++i){
+        if(table_proc[i] == NULL){
+            table_proc[i] = new;
+            return i;
+        }
+    }
+
+    // error
+    return -1;
 }
 
 
