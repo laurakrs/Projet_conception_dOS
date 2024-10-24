@@ -1,4 +1,5 @@
-#include <inttypes.h>       
+#include <inttypes.h>
+#include <stdio.h>       
 
 
 #define N_REG 5
@@ -6,8 +7,6 @@
 #define SIZE_S 512
 
 #define N_PROC 2
-
-
 
 
 // etat du processus : dans ce premier exemple, il n’y a que 2 états possibles : élu ou activable, vous
@@ -48,6 +47,11 @@ void ordonnance(void);
 int32_t mon_pid(void);
 
 char *mon_nom(void);
+
+
+// table globale
+extern PROCESS table_proc[N_PROC];
+
 
 
 
