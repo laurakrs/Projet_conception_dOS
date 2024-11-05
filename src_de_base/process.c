@@ -23,7 +23,8 @@
 
  */
 
-PROCESS* table_proc[N_PROC];
+PROCESS *table_proc[N_PROC];
+int num_proc = 0;
 
 void idle(void){
 
@@ -55,8 +56,10 @@ void proc1(void){
 
 int32_t mon_pid(void){
     for(int i = 0; i < N_PROC; i++){
-        if (table_proc[i].etat == ELU){
-            return table_proc[i].pid;
+        if (*table_proc[i] != NULL)
+        
+        ->etat == ELU){
+            return *table_proc[i].pid;
         }
     }
     return -1;
@@ -64,7 +67,7 @@ int32_t mon_pid(void){
 
 char *mon_nom(void){
     for(int i = 0; i < N_PROC; i++){
-        if (table_proc[i].etat == ELU){
+        if (*table_proc[i].etat == ELU){
             return table_proc[i].nom;
         }
     }
@@ -81,11 +84,19 @@ void ordonnance(void){
             break;
         }
     }
+
+    /*
     if(index == 0){
         next = 1;
     }else{
         next = 0;
+    }*/
+    if(index < N_PROC){
+        next = index+1;
+    }else{
+        next = 0;
     }
+    
     table_proc[index].etat = ACTIVABLE;
     table_proc[next].etat = ELU;
     ctx_sw(table_proc[index].tab_reg, table_proc[next].tab_reg);
@@ -94,15 +105,21 @@ void ordonnance(void){
 }
 
 int32_t cree_processus(void (*code)(void), char *nom){
-    PROCESS *new = (PROCESS *) malloc(sizeof(PROCESS));
 
 
-    for(int i = 0; i < N_PROC; ++i){
-        if(table_proc[i] == NULL){
-            table_proc[i] = new;
-            return i;
-        }
+
+    PROCESS *new = (PROCESS *) malloc(sizeof(PROCESS)); // WRONG!!!
+
+    if(num_proc > N_PROC){
+        return -1;
+    }else{
+        table_proc[num_proc] = new;
+        num_proc++;
+
+        return table_proc[num_proc-1].pid;
     }
+
+    
 
     // error
     return -1;
