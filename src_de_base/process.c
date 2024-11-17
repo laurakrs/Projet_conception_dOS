@@ -260,7 +260,7 @@ void ordonnance(void){
         }
     }
 
-    if(index < N_PROC){
+    if(index < num_proc-1){
         next = index+1;
     }else{
         next = 0;
@@ -269,8 +269,6 @@ void ordonnance(void){
     table_proc[index]->etat = ACTIVABLE;
     table_proc[next]->etat = ELU;
     ctx_sw(table_proc[index]->tab_reg, table_proc[next]->tab_reg);
-    // ctx_sw(table_proc[0].tab_reg, table_proc[1].tab_reg);
-    // ctx_sw(table_proc[index].tab_reg, table_proc[next].tab_reg);
 }
 
 
