@@ -10,7 +10,6 @@
 // par exemple afficher les valeurs de x, n et res avec la commande display
 
 
-
 // une fonction bien connue
 uint32_t fact(uint32_t n)
 {
@@ -41,7 +40,12 @@ void kernel_start(void)
 
     // PROCESS idle_p = {0, "idle", ELU};
 
-    /*    // PROC 1 
+    // IDLE
+    table_proc[0].pid = 0;
+    table_proc[0].etat = ELU;
+    strcpy(table_proc[0].nom,"idle");
+
+    // PROC 1 
     table_proc[1].pid = 1;
     table_proc[1].etat = ACTIVABLE;
     strcpy(table_proc[1].nom,"proc1");
@@ -51,39 +55,8 @@ void kernel_start(void)
     table_proc[1].tab_reg[1] = (uint32_t)(table_proc[1].stack+SIZE_S-1);
 
     // la case en sommet de pile doit contenir l’adresse de la fonction proc1
-    table_proc[1].stack[SIZE_S-1] = (uint32_t)proc1;*/
-
-    // IDLE
-    /*
-    table_proc[0].pid = 0;
-    table_proc[0].etat = ELU;
-    strcpy(table_proc[0].nom,"idle");*/
-
-    PROCESS *idle_p = (PROCESS *) malloc(sizeof(PROCESS)); 
-
-    idle_p->pid = 0;
-    strncpy(idle_p->nom, "idle", MAX_LENGTH_NOM - 1);
-    idle_p->nom[MAX_LENGTH_NOM - 1] = '\0';
-    idle_p->etat = ELU;
-    // Add process to the table
-    table_proc[0] = idle_p;
-
-    //int32_t pid0 = cree_processus(idle, "idle");
-    int32_t pid1 = cree_processus(proc1, "proc1");
-    int32_t pid2 = cree_processus(proc2, "proc2");
-    int32_t pid3 = cree_processus(proc3, "proc3");
-    int32_t pid4 = cree_processus(proc4, "proc4");
-    int32_t pid5 = cree_processus(proc5, "proc5");
-    int32_t pid6 = cree_processus(proc6, "proc6");
-
-    // Check PIDs for errors
-    if (pid1 < 0 || pid2 < 0 || pid3 < 0 || pid4 < 0 || pid5 < 0 || pid6 < 0) {
-        printf("Error: Unable to create all processes.\n");
-    }
-
-    // Processes successfully created and added to the activables list
-    printf("Processes created successfully.\n");
-
+    table_proc[1].stack[SIZE_S-1] = (uint32_t)proc1;
+   
 
 
     // demarrage du processus par defaut
@@ -146,4 +119,3 @@ void kernel_start(void)
     //}
 
 }
-
