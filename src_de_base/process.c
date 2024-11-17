@@ -213,6 +213,10 @@ int32_t cree_processus(void (*code)(void), char *nom){
 void init_list(ListActivables *list){
     list->tete = NULL;
     list->queue = NULL;
+
+    for(int i = 0; i < num_proc; i++){
+        inserer_queue(&list,table_proc[i]);
+    }
 }
 
 // Fonction d'insertion en queue
@@ -248,6 +252,8 @@ PROCESS *extraire_tete(ListActivables *list){
     }
 }
 
+
+/*
 void ordonnance(void){
     uint32_t pid = mon_pid();
     int index = -1;
@@ -269,6 +275,24 @@ void ordonnance(void){
     table_proc[index]->etat = ACTIVABLE;
     table_proc[next]->etat = ELU;
     ctx_sw(table_proc[index]->tab_reg, table_proc[next]->tab_reg);
+}*/
+
+
+void ordonnance(void){
+
+    PROCESS *next = extraire_tete(activables);
+
+    if(next != NULL){
+        current->etat = ACTIVABLE;
+        inserer_queue(activables, current);
+
+        next->etat = ELU;
+
+        ctx_sw(current->tab_reg, next->tab_reg);
+    }
+
+
+   
 }
 
 

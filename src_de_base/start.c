@@ -11,6 +11,7 @@
 
 
 
+
 // une fonction bien connue
 uint32_t fact(uint32_t n)
 {
@@ -39,27 +40,11 @@ void kernel_start(void)
     élu le premier ;
  */
 
-    // PROCESS idle_p = {0, "idle", ELU};
-
-    /*    // PROC 1 
-    table_proc[1].pid = 1;
-    table_proc[1].etat = ACTIVABLE;
-    strcpy(table_proc[1].nom,"proc1");
-
-    // — pour proc1 la case de la zone de sauvegarde des registres correspondant à %esp doit pointer sur le sommet de pile, 
-    // pas le début de la zone mémoire allouée, mais la fin de cette zone (lorsqu’on empile des valeurs, on descend vers les adresses décroissantes)
-    table_proc[1].tab_reg[1] = (uint32_t)(table_proc[1].stack+SIZE_S-1);
-
-    // la case en sommet de pile doit contenir l’adresse de la fonction proc1
-    table_proc[1].stack[SIZE_S-1] = (uint32_t)proc1;*/
-
-    // IDLE
-    /*
-    table_proc[0].pid = 0;
-    table_proc[0].etat = ELU;
-    strcpy(table_proc[0].nom,"idle");*/
+    init_list(&activables);
 
     PROCESS *idle_p = (PROCESS *) malloc(sizeof(PROCESS)); 
+
+    current = (PROCESS *) malloc(sizeof(PROCESS)); 
 
     idle_p->pid = 0;
     strncpy(idle_p->nom, "idle", MAX_LENGTH_NOM - 1);
@@ -84,7 +69,9 @@ void kernel_start(void)
     // Processes successfully created and added to the activables list
     printf("Processes created successfully.\n");
 
+    init_list(activables);
 
+    current = extraire_tete(activables);
 
     // demarrage du processus par defaut
     idle();

@@ -76,6 +76,9 @@ int32_t cree_processus(void (*code)(void), char *nom);
 // extern PROCESS table_proc[N_PROC];
 extern PROCESS* table_proc[N_PROC];
 
+extern ListActivables activables; 
+extern PROCESS *current;
+
 /* définir une liste des activables : il est sûrement plus efficace de conserver deux pointeurs, un sur
 la tête et un autre sur la queue de la liste, pour garantir l’insertion en queue à coût constant.*/
 
