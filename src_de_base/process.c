@@ -31,7 +31,8 @@
 
 int num_proc = 1;
 PROCESS *table_proc[N_PROC];
-
+ListActivables activables; 
+PROCESS *current;
 
 void idle(void){
 
@@ -200,10 +201,14 @@ int32_t cree_processus(void (*code)(void), char *nom){
         new_process->tab_reg[1] = (uint32_t)(new_process->stack+SIZE_S-1);
         new_process->stack[SIZE_S-1] = (int)code;
 
-
-
+        
         // Add process to the table
         table_proc[num_proc] = new_process;
+        table_proc[num_proc-1]->suiv = new_process;
+
+
+        new_process->suiv = NULL;
+  
         num_proc++;
 
         return new_process->pid;
@@ -215,13 +220,13 @@ void init_list(ListActivables *list){
     list->queue = NULL;
 
     for(int i = 0; i < num_proc; i++){
-        inserer_queue(&list,table_proc[i]);
+        inserer_queue(list,table_proc[i]);
     }
 }
 
 // Fonction d'insertion en queue
 void inserer_queue(ListActivables *list, PROCESS *process){
-    process->suiv = NULL;   
+    // process->suiv = NULL;   
 
     if(list->queue){
         list->queue->suiv = process;
@@ -280,15 +285,19 @@ void ordonnance(void){
 
 void ordonnance(void){
 
-    PROCESS *next = extraire_tete(activables);
+    PROCESS *next = extraire_tete(&activables);
 
     if(next != NULL){
-        current->etat = ACTIVABLE;
-        inserer_queue(activables, current);
+        if((current != NULL) & (current != next)){
+            current->etat = ACTIVABLE;
+            inserer_queue(&activables, current);
+        }
 
         next->etat = ELU;
 
-        ctx_sw(current->tab_reg, next->tab_reg);
+        PROCESS *prev = current;
+        current = next;
+        ctx_sw(prev->tab_reg, next->tab_reg);
     }
 
 

@@ -40,7 +40,9 @@ void kernel_start(void)
     élu le premier ;
  */
 
-    init_list(&activables);
+    for (int i = 0; i < N_PROC; i++) {
+        table_proc[i] = NULL;
+    }
 
     PROCESS *idle_p = (PROCESS *) malloc(sizeof(PROCESS)); 
 
@@ -50,6 +52,9 @@ void kernel_start(void)
     strncpy(idle_p->nom, "idle", MAX_LENGTH_NOM - 1);
     idle_p->nom[MAX_LENGTH_NOM - 1] = '\0';
     idle_p->etat = ELU;
+    idle_p->suiv = NULL;
+
+
     // Add process to the table
     table_proc[0] = idle_p;
 
@@ -69,9 +74,9 @@ void kernel_start(void)
     // Processes successfully created and added to the activables list
     printf("Processes created successfully.\n");
 
-    init_list(activables);
+    init_list(&activables);
 
-    current = extraire_tete(activables);
+    current = extraire_tete(&activables);
 
     // demarrage du processus par defaut
     idle();
