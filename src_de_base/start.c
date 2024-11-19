@@ -65,9 +65,10 @@ void kernel_start(void)
     int32_t pid4 = cree_processus(proc4, "proc4");
     int32_t pid5 = cree_processus(proc5, "proc5");
     int32_t pid6 = cree_processus(proc6, "proc6");
+    int32_t pid7 = cree_processus(proc7, "proc7");
 
     // Check PIDs for errors
-    if (pid1 < 0 || pid2 < 0 || pid3 < 0 || pid4 < 0 || pid5 < 0 || pid6 < 0) {
+    if (pid1 < 0 || pid2 < 0 || pid3 < 0 || pid4 < 0 || pid5 < 0 || pid6 < 0 || pid7 < 0) {
         printf("Error: Unable to create all processes.\n");
     }
 

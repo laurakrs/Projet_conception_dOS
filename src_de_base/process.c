@@ -122,6 +122,18 @@ void proc6(void){
         ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);*/
 }
 
+void proc7(void){
+    for(;;){
+        
+        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        ordonnance();
+    }
+        /*
+        printf("[proc1] idle ma donne la main\n");
+        printf("[proc1] je tente de lui la redonner...\n");
+        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);*/
+}
+
 
 
 

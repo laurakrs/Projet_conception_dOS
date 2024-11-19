@@ -58,6 +58,8 @@ void proc5(void);
 
 void proc6(void);
 
+void proc7(void);
+
 // assembly
 // Elle prend 2 paramètres de types pointeurs sur des entiers : il s’agit en fait des adresses des zones de sauvegarde des registres des contextes de l’ancien processus et du nouveau.
 void ctx_sw(uint32_t* adr_anc, uint32_t* adr_nouv);
@@ -99,4 +101,4 @@ void inserer_queue(ListActivables *list, PROCESS *process);
 PROCESS *extraire_tete(ListActivables *list);
 
 
-extern ListActivables* activables; 
+extern ListActivables activables; 
