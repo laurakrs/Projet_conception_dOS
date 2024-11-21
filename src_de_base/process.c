@@ -35,69 +35,76 @@ ListActivables activables;
 PROCESS *current;
 
 void idle(void){
-
-        for (;;) {
-            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-            ordonnance();
-        }
+    for (;;) {
+        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        sti();
+        hlt();
+        cli();
+    }
 }
 
 void proc1(void){
-    for(;;){
-        
+    for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        ordonnance();
+        sti();
+        hlt();
+        cli();
     }
 }
 
 void proc2(void){
-    for(;;){
-        
+    for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        ordonnance();
+        sti();
+        hlt();
+        cli();
     }
 }
 
 void proc3(void){
-    for(;;){
-        
+    for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        ordonnance();
+        sti();
+        hlt();
+        cli();
     }
 }
 
 void proc4(void){
-    for(;;){
-        
+    for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        ordonnance();
+        sti();
+        hlt();
+        cli();
     }
 }
 
 void proc5(void){
-    for(;;){
-        
+    for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        ordonnance();
+        sti();
+        hlt();
+        cli();
     }
 }
 
 void proc6(void){
-    for(;;){
-        
+    for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        ordonnance();
+        sti();
+        hlt();
+        cli();
     }
 }
 
 void proc7(void){
-    for(;;){
-        
+    for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        ordonnance();
+        sti();
+        hlt();
+        cli();
     }
 }
-
 
 
 

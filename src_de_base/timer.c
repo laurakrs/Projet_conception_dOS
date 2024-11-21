@@ -11,6 +11,7 @@
 #include "timer.h"
 #include <ecran.h>
 #include <stdio.h>
+#include <process.h>
 
 
 
@@ -88,6 +89,9 @@ void tic_PIT(void){
     // ou
     // ecrit_temps(temps,strlen(temps));
 
+    // Vous devez penser à ajouter un appel à la fonction ordonnance à la fin de la fonction appelée par le
+    // traitant de l’interruption horloge, pour provoquer le changement de processus
+    ordonnance();
 };
 
 void regler_freq(){
