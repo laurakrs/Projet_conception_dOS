@@ -12,11 +12,9 @@
 
 #define MAX_LENGTH_NOM 50
 
-// avant = 2 processus
 
-// etat du processus : dans ce premier exemple, il n’y a que 2 états possibles : élu ou activable, vous
-// pouvez toutefois déjà définir proprement les états comme une énumération de constantes
-enum ETAT {ELU, ACTIVABLE};
+// etat du processus : 3 états possibles : élu, activable, ou endormi -> énumération de constantes
+enum ETAT {ELU, ACTIVABLE, ENDORMI};
 
 typedef struct PROCESS {
     // le pid du processus, sous la forme d’un entier (signe -1 en cas derreur)
@@ -40,6 +38,8 @@ typedef struct PROCESS {
    // champ suiv défini comme un pointeur vers une structure de processus : 
    // ce champ va permettre de chainer les processus les uns aux autres ;
    struct PROCESS *suiv;
+
+   uint32_t heure_reveil;
 
 } PROCESS;
 
@@ -86,19 +86,25 @@ la tête et un autre sur la queue de la liste, pour garantir l’insertion en qu
 
 
 // LIST
-typedef struct ListActivables {
+typedef struct ListProc {
     PROCESS *tete;
     PROCESS *queue;
-} ListActivables;
+} ListProc;
 
-void init_list(ListActivables *list);
+void init_list(ListProc *list);
 
 
 // Fonction d'insertion en queue
-void inserer_queue(ListActivables *list, PROCESS *process);
+void inserer_queue(ListProc *list, PROCESS *process);
+
+// Fonction d'insertion en la list des endormis
+void inserer_endormi(ListProc *list, PROCESS *process);
+
+void dors(uint32_t nbr_secs);
 
 // Fonction d'extraction de la tete
-PROCESS *extraire_tete(ListActivables *list);
+PROCESS *extraire_tete(ListProc *list);
 
+extern ListProc activables; 
 
-extern ListActivables activables; 
+extern ListProc endormis; 

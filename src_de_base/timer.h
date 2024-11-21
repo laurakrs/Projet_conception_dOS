@@ -59,6 +59,9 @@ void regler_freq();
 // 
 void masque_IRQ(uint32_t num_IRQ, bool masque);
 
+// renvoie le nombre de secondes écoulées depuis le démarrage du système
+uint32_t nbr_secondes();
+
 
 
 

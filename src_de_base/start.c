@@ -76,6 +76,7 @@ void kernel_start(void)
     printf("Processes created successfully.\n");
 
     init_list(&activables);
+    init_list(&endormis);
 
     current = extraire_tete(&activables);
 

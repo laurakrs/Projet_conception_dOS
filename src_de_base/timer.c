@@ -80,9 +80,10 @@ void tic_PIT(void){
     ticks++; 
 
     char temps[LEN_TEMPS];
-    int heures = ticks/(CLOCKFREQ * 3600)%24;
-    int minutes = (ticks/(CLOCKFREQ * 60))%60;
-    int secondes = (ticks/(CLOCKFREQ))%60; 
+    int total_seconds = ticks/CLOCKFREQ;
+    int heures = (total_seconds/3600)%24;
+    int minutes = (total_seconds/60)%60;
+    int secondes = total_seconds%60; 
 
     sprintf(temps, "%02u:%02u:%02u", heures, minutes, secondes);
     ecrit_temps(temps,LEN_TEMPS);
@@ -93,6 +94,10 @@ void tic_PIT(void){
     // traitant de l’interruption horloge, pour provoquer le changement de processus
     ordonnance();
 };
+
+uint32_t nbr_secondes(){
+    return (uint32_t) ticks / CLOCKFREQ;
+}
 
 void regler_freq(){
 

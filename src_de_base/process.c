@@ -32,7 +32,8 @@
 
 int num_proc = 1;
 PROCESS *table_proc[N_PROC];
-ListActivables activables; 
+ListProc activables; 
+ListProc endormis;
 PROCESS *current;
 
 void idle(void){
@@ -168,7 +169,7 @@ int32_t cree_processus(void (*code)(void), char *nom){
     }
 }
 
-void init_list(ListActivables *list){
+void init_list(ListProc *list){
     list->tete = NULL;
     list->queue = NULL;
 
@@ -178,7 +179,7 @@ void init_list(ListActivables *list){
 }
 
 // Fonction d'insertion en queue
-void inserer_queue(ListActivables *list, PROCESS *process){
+void inserer_queue(ListProc *list, PROCESS *process){
     // process->suiv = NULL;   
 
     if(list->queue){
@@ -193,7 +194,7 @@ void inserer_queue(ListActivables *list, PROCESS *process){
 }
 
 // Fonction d'extraction de la tete
-PROCESS *extraire_tete(ListActivables *list){
+PROCESS *extraire_tete(ListProc *list){
 
     if(list->tete){
         PROCESS *process = list->tete;
@@ -213,6 +214,8 @@ PROCESS *extraire_tete(ListActivables *list){
 
 void ordonnance(void){
 
+    // C’est la fonction d’ordonnancement qui devra réveiller tous les processus dont l’heure de réveil est dépassée.
+
     PROCESS *next = extraire_tete(&activables);
 
     if(next != NULL){
@@ -227,10 +230,67 @@ void ordonnance(void){
         current = next;
         ctx_sw(prev->tab_reg, next->tab_reg);
     }
-
-
-   
 }
+
+// void dors(uint32_t nbr_secs) qui prend en paramètre le nombre de secondes pendant lequel le processus doit dormir
+void dors(uint32_t nbr_secs){
+    /*gérer une liste des processus endormis :
+    lorsqu’un processus appelle la procédure d’endormissement*/
+    
+    // on l’enlève de la file des activables 
+    PROCESS* proc = extraire_tete(&activables);
+    
+    
+    // et on l’ajoute dans cette liste des endormis, et vice-versa quand il se réveille.
+    inserer_endormi(&endormis, proc);
+
+}
+
+// Fonction d'insertion en la liste des endormis
+void inserer_endormi(ListProc *list, PROCESS *process){
+
+    // les processus devant se réveiller en premier seront en tête de liste 
+
+    PROCESS* curr = list->tete;
+    PROCESS* prev = NULL;
+
+    // if the list is empty, insert the process as tete
+    if (curr == NULL) {
+        list->tete = process;
+        list->queue = process;
+    }
+
+    // if the process in tete should be awaken after the new process
+    if(curr->heure_reveil > process->heure_reveil){   
+        // the new process should occupy the tete
+        process->suiv = curr;
+        list->tete = process;
+
+    }else{
+
+        // should find the correct place
+        while(curr != NULL && curr->heure_reveil < process->heure_reveil){
+            prev = curr;
+            curr = curr->suiv;
+        }
+
+        // either found a process with a later heure-reveil or reached the end of the list
+
+        prev->suiv = process;
+
+        if(curr != NULL){
+            // insert process in the correct place
+            process->suiv = curr;
+        }else{ // reached the end of the list
+            list->queue = process;
+        }
+
+        process->etat = ENDORMI;
+        
+    }
+}
+
+
 
 
 
