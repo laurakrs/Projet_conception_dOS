@@ -47,21 +47,24 @@ void idle(void){
 
 void proc1(void){
     for (;;) {
-        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        uint32_t rev = (uint32_t)(nbr_secondes() + 2);
+        printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
         dors(2);
     }
 }
 
 void proc2(void){
     for (;;) {
-        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        uint32_t rev = (uint32_t)(nbr_secondes() + 3);
+        printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
         dors(3);
     }
 }
 
 void proc3(void){
     for (;;) {
-        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        uint32_t rev = (uint32_t)(nbr_secondes() + 5);
+        printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
         dors(5);
     }
 }
@@ -215,23 +218,22 @@ void ordonnance(void){
 
     // C’est la fonction d’ordonnancement qui devra réveiller tous les processus dont l’heure de réveil est dépassée.
     reveiller_procs(&endormis);
+    
+    if((current != NULL)){
+    // & (current != next)){
+        current->etat = ACTIVABLE;
+        inserer_queue(&activables, current);
+    }
 
     // Extraire la tete des activables
     PROCESS *next = extraire_tete(&activables);
 
-    if(next != NULL){
-        if((current != NULL)){
-        // & (current != next)){
-            current->etat = ACTIVABLE;
-            inserer_queue(&activables, current);
-        }
+    next->etat = ELU;
 
-        next->etat = ELU;
-
-        PROCESS *prev = current;
-        current = next;
-        ctx_sw(prev->tab_reg, next->tab_reg);
-    }
+    PROCESS *prev = current;
+    current = next;
+    ctx_sw(prev->tab_reg, next->tab_reg);
+    
 }
 
 void ordonnance_endormi(void){
@@ -336,7 +338,7 @@ void inserer_endormi(ListProc *list, PROCESS *process){
     }else{
 
         // should find the correct place
-        while(curr != NULL && curr->heure_reveil < process->heure_reveil){
+        while(curr != NULL && (curr->heure_reveil <= process->heure_reveil)){
             prev = curr;
             curr = curr->suiv;
         }
@@ -350,6 +352,7 @@ void inserer_endormi(ListProc *list, PROCESS *process){
             process->suiv = curr;
         }else{ // reached the end of the list
             list->queue = process;
+            process->suiv = NULL;
         }       
     }
 
