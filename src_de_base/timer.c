@@ -17,6 +17,7 @@
 
 // variable global 
 static int ticks = 0; 
+static int total_seconds = 0; 
 
 
 /*Ecrit_temps prend en paramètre une chaine de caractères (ainsi que sa
@@ -80,23 +81,28 @@ void tic_PIT(void){
     ticks++; 
 
     char temps[LEN_TEMPS];
-    int total_seconds = ticks/CLOCKFREQ;
-    int heures = (total_seconds/3600)%24;
-    int minutes = (total_seconds/60)%60;
-    int secondes = total_seconds%60; 
 
-    sprintf(temps, "%02u:%02u:%02u", heures, minutes, secondes);
-    ecrit_temps(temps,LEN_TEMPS);
-    // ou
-    // ecrit_temps(temps,strlen(temps));
+    if(ticks == CLOCKFREQ){
+        ticks = 0;
+        total_seconds++;
+        // int total_seconds = ticks/CLOCKFREQ;
+        int heures = (total_seconds/3600)%24;
+        int minutes = (total_seconds/60)%60;
+        int secondes = total_seconds%60; 
 
-    // Vous devez penser à ajouter un appel à la fonction ordonnance à la fin de la fonction appelée par le
-    // traitant de l’interruption horloge, pour provoquer le changement de processus
-    ordonnance();
+        sprintf(temps, "%02u:%02u:%02u", heures, minutes, secondes);
+        ecrit_temps(temps,LEN_TEMPS);
+        // ou ecrit_temps(temps,strlen(temps));
+
+        // Vous devez penser à ajouter un appel à la fonction ordonnance à la fin de la fonction appelée par le
+        // traitant de l’interruption horloge, pour provoquer le changement de processus
+        ordonnance();
+    }
+
 };
 
 uint32_t nbr_secondes(){
-    return (uint32_t) ticks / CLOCKFREQ;
+    return total_seconds;
 }
 
 void regler_freq(){

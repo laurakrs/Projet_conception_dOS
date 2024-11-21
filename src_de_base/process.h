@@ -66,6 +66,8 @@ void ctx_sw(uint32_t* adr_anc, uint32_t* adr_nouv);
 
 void ordonnance(void);
 
+void ordonnance_endormi(void);
+
 int32_t mon_pid(void);
 
 char *mon_nom(void);
@@ -94,7 +96,6 @@ typedef struct ListProc {
 void init_list(ListProc *list);
 
 void init_list_endormis(ListProc *list);
-
 
 // Fonction d'insertion en queue
 void inserer_queue(ListProc *list, PROCESS *process);
