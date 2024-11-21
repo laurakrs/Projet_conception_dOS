@@ -79,9 +79,10 @@ void tic_PIT(void){
     ticks++; 
 
     char temps[LEN_TEMPS];
-    int heures = ticks/(CLOCKFREQ * 3600)%24;
-    int minutes = (ticks/(CLOCKFREQ * 60))%60;
-    int secondes = (ticks/(CLOCKFREQ))%60; 
+    int total_seconds = ticks/CLOCKFREQ;
+    int heures = (total_seconds/3600)%24;
+    int minutes = (total_seconds/60)%60;
+    int secondes = total_seconds%60; 
 
     sprintf(temps, "%02u:%02u:%02u", heures, minutes, secondes);
     ecrit_temps(temps,LEN_TEMPS);
