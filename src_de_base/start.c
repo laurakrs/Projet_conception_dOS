@@ -79,8 +79,27 @@ void kernel_start(void)
 
     current = extraire_tete(&activables);
 
+ 
+
+
+    regler_freq();
+    init_traitant_IT(32, traitant_IT_32);
+    masque_IRQ(0,0);
+
+
+
+
+    // démasquage des interruptions externes
+    // sti(); // Enlever pour traiter lordonnance 
+
+    ecrit_temps("HH:MM:SS",9); 
+
     // demarrage du processus par defaut
     idle();
+
+    while (1) {
+        hlt();
+    }
 
 }
 
