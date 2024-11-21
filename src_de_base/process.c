@@ -40,14 +40,6 @@ void idle(void){
             printf("[%s] pid = %i\n", mon_nom(), mon_pid());
             ordonnance();
         }
-    /*
-    for (int i = 0; i < 3; i++) {
-        printf("[idle] je tente de passer la main a proc1...\n");
-        ctx_sw(table_proc[0].tab_reg, table_proc[1].tab_reg);
-        printf("[idle] proc1 ma redonne la main\n");
-    }
-    printf("[idle] je bloque le systeme\n");
-    hlt();*/
 }
 
 void proc1(void){
@@ -56,10 +48,6 @@ void proc1(void){
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         ordonnance();
     }
-        /*
-        printf("[proc1] idle ma donne la main\n");
-        printf("[proc1] je tente de lui la redonner...\n");
-        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);*/
 }
 
 void proc2(void){
@@ -68,10 +56,6 @@ void proc2(void){
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         ordonnance();
     }
-        /*
-        printf("[proc1] idle ma donne la main\n");
-        printf("[proc1] je tente de lui la redonner...\n");
-        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);*/
 }
 
 void proc3(void){
@@ -80,10 +64,6 @@ void proc3(void){
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         ordonnance();
     }
-        /*
-        printf("[proc1] idle ma donne la main\n");
-        printf("[proc1] je tente de lui la redonner...\n");
-        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);*/
 }
 
 void proc4(void){
@@ -92,10 +72,6 @@ void proc4(void){
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         ordonnance();
     }
-        /*
-        printf("[proc1] idle ma donne la main\n");
-        printf("[proc1] je tente de lui la redonner...\n");
-        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);*/
 }
 
 void proc5(void){
@@ -104,10 +80,6 @@ void proc5(void){
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         ordonnance();
     }
-        /*
-        printf("[proc1] idle ma donne la main\n");
-        printf("[proc1] je tente de lui la redonner...\n");
-        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);*/
 }
 
 void proc6(void){
@@ -116,10 +88,6 @@ void proc6(void){
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         ordonnance();
     }
-        /*
-        printf("[proc1] idle ma donne la main\n");
-        printf("[proc1] je tente de lui la redonner...\n");
-        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);*/
 }
 
 void proc7(void){
@@ -128,10 +96,6 @@ void proc7(void){
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         ordonnance();
     }
-        /*
-        printf("[proc1] idle ma donne la main\n");
-        printf("[proc1] je tente de lui la redonner...\n");
-        ctx_sw(table_proc[1].tab_reg, table_proc[0].tab_reg);*/
 }
 
 
@@ -156,37 +120,6 @@ char *mon_nom(void){
     return "f";   
 }
 
-
-/*
-void ordonnance(void){
-    uint32_t pid = mon_pid();
-    int index = -1;
-    int next = -1;
-    for(int i = 0; i < N_PROC; i++){
-        if (table_proc[i].pid == pid){
-            index = i;
-            break;
-        }
-    }
-
-    // if(index == 0){
-    //    next = 1;
-    // else{
-    //    next = 0;
-    // }
-
-    if(index < N_PROC){
-        next = index+1;
-    }else{
-        next = 0;
-    }
-    
-    table_proc[index].etat = ACTIVABLE;
-    table_proc[next].etat = ELU;
-    ctx_sw(table_proc[index].tab_reg, table_proc[next].tab_reg);
-    // ctx_sw(table_proc[0].tab_reg, table_proc[1].tab_reg);
-    // ctx_sw(table_proc[index].tab_reg, table_proc[next].tab_reg);
-}*/
 
 
 /* Prend en paramètre le code de la fonction à exécuter (ainsi que le nom du processus) et renvoie le pid du
@@ -268,31 +201,6 @@ PROCESS *extraire_tete(ListActivables *list){
         return NULL; // list was empty. there is no process to return;
     }
 }
-
-
-/*
-void ordonnance(void){
-    uint32_t pid = mon_pid();
-    int index = -1;
-    int next = -1;
-    // Parcourir la table de processus
-    for(int i = 0; i < N_PROC; i++){
-        if (table_proc[i]->pid == pid){
-            index = i;
-            break;
-        }
-    }
-
-    if(index < num_proc-1){
-        next = index+1;
-    }else{
-        next = 0;
-    }
-    
-    table_proc[index]->etat = ACTIVABLE;
-    table_proc[next]->etat = ELU;
-    ctx_sw(table_proc[index]->tab_reg, table_proc[next]->tab_reg);
-}*/
 
 
 void ordonnance(void){
