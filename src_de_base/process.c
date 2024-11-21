@@ -2,6 +2,7 @@
 #include <string.h>
 // #include <stdint.h>
 #include <cpu.h>
+#include <timer.h>
 
 
 
@@ -38,7 +39,6 @@ PROCESS *current;
 
 void idle(void){
     for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         sti();
         hlt();
         cli();
@@ -47,28 +47,25 @@ void idle(void){
 
 void proc1(void){
     for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        sti();
-        hlt();
-        cli();
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
+        mon_nom(), mon_pid());
+        dors(2);
     }
 }
 
 void proc2(void){
     for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        sti();
-        hlt();
-        cli();
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
+        mon_nom(), mon_pid());
+        dors(3);
     }
 }
 
 void proc3(void){
     for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        sti();
-        hlt();
-        cli();
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
+        mon_nom(), mon_pid());
+        dors(5);
     }
 }
 
@@ -178,6 +175,11 @@ void init_list(ListProc *list){
     }
 }
 
+void init_list_endormis(ListProc *list){
+    list->tete = NULL;
+    list->queue = NULL;
+}
+
 // Fonction d'insertion en queue
 void inserer_queue(ListProc *list, PROCESS *process){
     // process->suiv = NULL;   
@@ -215,7 +217,9 @@ PROCESS *extraire_tete(ListProc *list){
 void ordonnance(void){
 
     // C’est la fonction d’ordonnancement qui devra réveiller tous les processus dont l’heure de réveil est dépassée.
+    reveiller_procs(&endormis);
 
+    // Extraire la tete des activables
     PROCESS *next = extraire_tete(&activables);
 
     if(next != NULL){
@@ -232,17 +236,53 @@ void ordonnance(void){
     }
 }
 
+void reveiller_procs(ListProc *list){
+
+    // Trouver les seconds passes
+    uint32_t temps = nbr_secondes();
+
+    // Trouver la tete de la liste dendormis
+    PROCESS* curr = list->tete;
+
+    // il n'y a aucun processus a reveiller
+    if(curr == NULL){
+        return;
+    }
+
+    while(curr != NULL){
+        if(curr->heure_reveil <= temps){
+            
+            // remove from the list of endormis
+            PROCESS* proc = extraire_tete(list);
+
+            // insert in the list of activables
+            inserer_queue(&activables, proc);
+
+            // mettre a jour curr avec la nouvelle tete
+            curr = list->tete;
+        }else{
+            // il ne faut pas reveiller dautres processus
+            return;
+        }
+    }
+    return;
+}
+
 // void dors(uint32_t nbr_secs) qui prend en paramètre le nombre de secondes pendant lequel le processus doit dormir
 void dors(uint32_t nbr_secs){
     /*gérer une liste des processus endormis :
     lorsqu’un processus appelle la procédure d’endormissement*/
     
     // on l’enlève de la file des activables 
-    PROCESS* proc = extraire_tete(&activables);
+    // PROCESS* proc = extraire_tete(&activables);
+
+    current->heure_reveil = nbr_secs;
     
     
     // et on l’ajoute dans cette liste des endormis, et vice-versa quand il se réveille.
-    inserer_endormi(&endormis, proc);
+    inserer_endormi(&endormis, current);
+    
+    ordonnance();
 
 }
 
@@ -258,6 +298,16 @@ void inserer_endormi(ListProc *list, PROCESS *process){
     if (curr == NULL) {
         list->tete = process;
         list->queue = process;
+        process->etat = ENDORMI;
+        return;
+    }
+
+    // if process should be inserted at the end
+    if(list->queue->heure_reveil < process->heure_reveil){
+        list->queue->suiv = process;
+        list->queue = process;
+        process->etat = ENDORMI;
+        return;
     }
 
     // if the process in tete should be awaken after the new process
@@ -283,11 +333,10 @@ void inserer_endormi(ListProc *list, PROCESS *process){
             process->suiv = curr;
         }else{ // reached the end of the list
             list->queue = process;
-        }
-
-        process->etat = ENDORMI;
-        
+        }       
     }
+
+    process->etat = ENDORMI;
 }
 
 

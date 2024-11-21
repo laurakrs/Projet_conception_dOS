@@ -93,6 +93,8 @@ typedef struct ListProc {
 
 void init_list(ListProc *list);
 
+void init_list_endormis(ListProc *list);
+
 
 // Fonction d'insertion en queue
 void inserer_queue(ListProc *list, PROCESS *process);
@@ -104,6 +106,9 @@ void dors(uint32_t nbr_secs);
 
 // Fonction d'extraction de la tete
 PROCESS *extraire_tete(ListProc *list);
+
+// Fonction pour reveiller tous les processus dont l’heure de réveil est dépassée
+void reveiller_procs(ListProc *list);
 
 extern ListProc activables; 
 
