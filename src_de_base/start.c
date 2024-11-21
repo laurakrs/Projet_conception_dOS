@@ -78,8 +78,9 @@ void kernel_start(void)
     // Processes successfully created and added to the activables list
     printf("Processes created successfully.\n");
 
-    init_list(&activables);
-    init_list_endormis(&endormis);
+    init_list_proc(&activables);
+    init_list(&endormis);
+    init_list(&zombies);
 
     current = extraire_tete(&activables);
 
@@ -93,6 +94,8 @@ void kernel_start(void)
     // sti(); // Enlever pour traiter lordonnance 
 
     ecrit_temps("HH:MM:SS",9); 
+
+    affiche_etats(); 
 
     // demarrage du processus par defaut
     idle();

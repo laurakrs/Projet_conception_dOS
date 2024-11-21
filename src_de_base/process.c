@@ -3,6 +3,7 @@
 // #include <stdint.h>
 #include <cpu.h>
 #include <timer.h>
+#include <ecran.h>
 
 
 
@@ -35,7 +36,15 @@ int num_proc = 1;
 PROCESS *table_proc[N_PROC];
 ListProc activables; 
 ListProc endormis;
+ListProc zombies;
 PROCESS *current;
+
+const char *etat_noms[] = {
+    "ELU",
+    "ACTIVABLE",
+    "ENDORMI",
+    "ZOMBIE"
+};
 
 void idle(void){
     for (;;) {
@@ -46,27 +55,23 @@ void idle(void){
 }
 
 void proc1(void){
-    for (;;) {
-        uint32_t rev = (uint32_t)(nbr_secondes() + 2);
-        printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
+    for (int32_t i = 0; i < 2; i++) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(),
+        mon_nom(), mon_pid());
         dors(2);
-    }
+    }   
 }
 
 void proc2(void){
-    for (;;) {
-        uint32_t rev = (uint32_t)(nbr_secondes() + 3);
-        printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
-        dors(3);
-    }
+    uint32_t rev = (uint32_t)(nbr_secondes() + 3);
+    printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
+    dors(3);
 }
 
 void proc3(void){
-    for (;;) {
-        uint32_t rev = (uint32_t)(nbr_secondes() + 5);
-        printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
-        dors(5);
-    }
+    uint32_t rev = (uint32_t)(nbr_secondes() + 5);
+    printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
+    dors(5);
 }
 
 void proc4(void){
@@ -166,7 +171,7 @@ int32_t cree_processus(void (*code)(void), char *nom){
     }
 }
 
-void init_list(ListProc *list){
+void init_list_proc(ListProc *list){
     list->tete = NULL;
     list->queue = NULL;
 
@@ -175,7 +180,7 @@ void init_list(ListProc *list){
     }
 }
 
-void init_list_endormis(ListProc *list){
+void init_list(ListProc *list){
     list->tete = NULL;
     list->queue = NULL;
 }
@@ -357,6 +362,69 @@ void inserer_endormi(ListProc *list, PROCESS *process){
     }
 
     process->etat = ENDORMI;
+}
+
+void fin_processus(){
+    // Désactiver le processus actif (puisque c’est forcément lui qui l’appelle)
+    current->etat = ZOMBIE;
+    inserer_queue(&zombies, current);
+
+    // Passer la main au prochain processus activable.
+    // Extraire la tete des activables
+    PROCESS *next = extraire_tete(&activables);
+
+    next->etat = ELU;
+
+    PROCESS *prev = current;
+    current = next;
+    ctx_sw(prev->tab_reg, next->tab_reg);
+
+}
+
+//Affiche (par exemple en haut à gauche de l’écran) 
+// l’état de chaque processus du système (par un simple parcours de la table des processus)
+void affiche_etats(void){
+
+    uint32_t lig = 0;
+    uint32_t col = 0;
+
+    const char *entete = "PID  | Etat     ";
+    for(int i = 0; entete[i] != '\0'; i++){
+        ecrit_car(lig, col+i, entete[i], false, BLANC, NOIR);
+    }
+    
+    lig++;
+
+    // processus
+    for(int i = 0; i < num_proc; i++){
+        
+        // ecrire pid
+        char pid_str[2];
+        sprintf(pid_str, "%d", table_proc[i]->pid);
+
+        for(int j = 0; pid_str[j] != '\0'; j++){
+            ecrit_car(lig, col + j, pid_str[j], FALSE, BLANC, NOIR);
+        }
+
+        const char *separator = " | ";
+        int offset = 2;
+        for(int j = 0; separator[j] != '\0'; j++){
+            ecrit_car(lig, col + offset + j, separator[j], FALSE, BLANC, NOIR);
+        }
+
+        offset += 2;
+
+        // ecrire etat
+        enum ETAT etat = table_proc[i]->etat;
+
+        const char *etat_str = etat_noms[etat];
+
+        for(int j = 0; etat_str[j] != '\0'; j++){
+            ecrit_car(lig, col + offset + j, separator[j], FALSE, BLANC, NOIR);
+        }
+
+        lig++;
+    }
 }
 
 

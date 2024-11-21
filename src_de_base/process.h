@@ -14,7 +14,7 @@
 
 
 // etat du processus : 3 états possibles : élu, activable, ou endormi -> énumération de constantes
-enum ETAT {ELU, ACTIVABLE, ENDORMI};
+enum ETAT {ELU, ACTIVABLE, ENDORMI, ZOMBIE};
 
 typedef struct PROCESS {
     // le pid du processus, sous la forme d’un entier (signe -1 en cas derreur)
@@ -93,9 +93,9 @@ typedef struct ListProc {
     PROCESS *queue;
 } ListProc;
 
-void init_list(ListProc *list);
+void init_list_proc(ListProc *list);
 
-void init_list_endormis(ListProc *list);
+void init_list(ListProc *list);
 
 // Fonction d'insertion en queue
 void inserer_queue(ListProc *list, PROCESS *process);
@@ -111,6 +111,14 @@ PROCESS *extraire_tete(ListProc *list);
 // Fonction pour reveiller tous les processus dont l’heure de réveil est dépassée
 void reveiller_procs(ListProc *list);
 
+// Désactiver le processus actif (puisque c’est forcément lui qui l’appelle)
+// et passer la main au prochain processus activable.
+void fin_processus();
+
+void affiche_etats(void);
+
 extern ListProc activables; 
 
 extern ListProc endormis; 
+
+extern ListProc zombies; 
