@@ -32,7 +32,6 @@ void ecrit_car(uint32_t lig, uint32_t col, char c, uint8_t b_clignote, uint8_t c
 
 	// On doit ecrire dans le mot de 2 octets (uint16_t en C) dont l'adresse en memoire peut etre calcule a partir de la fonction
 	
-	// retrouver le valeur ASCII
 	uint16_t *pos = ptr_mem(lig, col);
 
 	if (pos == NULL){
@@ -71,6 +70,8 @@ Cette position doit être envoyée en deux temps à la carte vidéo
 /* Placer le curseur à la position donnée */
 void place_curseur(uint32_t lig, uint32_t col){
 
+
+	// La position du curseur est un entier sur 16 bits calculé via la formule suivante : pos = col + lig × 80.
 	uint16_t pos = col + lig * NUM_COL;
 
 	
@@ -95,13 +96,17 @@ uint16_t getCursorPosition(){
 	uint16_t pos = 0;
 
 	// partie basse
+	// Writes 0x0F to the command port to select the partie basse of the cursor position register.
 	outb(0x0F,PORT_COMMANDE);
+	// Reads the low byte from the data port.
 	pos |= inb(PORT_DONNEES);
 	
 	// partie haute
+	// Writes 0x0E to the command port to select the partie haute.
 	outb(0x0E,PORT_COMMANDE);
+	// Reads the high byte and combines it with the low byte to form a full 16-bit position.
 	pos |= (inb(PORT_DONNEES) << 8);
-
+	// Returns the 16-bit linear index representing the current cursor position.
 	return pos;
 }
 
@@ -122,6 +127,8 @@ void traite_car(char c){
 	}
 
 	uint16_t pos = getCursorPosition();
+
+	// Rappel: uint16_t pos = col + lig * NUM_COL;
 
 	// get line and column
 	uint32_t lig = pos / NUM_COL;
@@ -191,6 +198,7 @@ void traite_car(char c){
 void defilement(void){
 	memmove((void *)ADR_DEBUT, (void *)(ADR_DEBUT + 2*NUM_COL),2*NUM_COL*(NUM_LIN-1));
 	for (uint32_t col = 0; col < NUM_COL; col++){
+		// clear last line
 		ecrit_car(NUM_LIN-1, col, SPACE, FALSE, BLANC, NOIR);
 	}
 }
