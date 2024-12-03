@@ -381,52 +381,52 @@ void fin_processus(){
 
 }
 
-//Affiche (par exemple en haut à gauche de l’écran) 
-// l’état de chaque processus du système (par un simple parcours de la table des processus)
-void affiche_etats(void){
+void affiche_etats(void) {
 
+    // Get line and column
     uint32_t lig = 0;
     uint32_t col = 0;
 
     const char *entete = "PID  | Etat     ";
-    for(int i = 0; entete[i] != '\0'; i++){
-        ecrit_car(lig, col+i, entete[i], false, BLANC, NOIR);
+    for (int i = 0; entete[i] != '\0'; i++) {
+        ecrit_car(lig, col + i, entete[i], false, BLANC, NOIR);
     }
-    
+
     lig++;
 
-    // processus
-    for(int i = 0; i < num_proc; i++){
+    // Parcourir les processus
+    for (int i = 0; i < num_proc; i++) {
+
         
-        // ecrire pid
-        char pid_str[2];
+        // Ecrire pid
+        char pid_str[10]; 
         sprintf(pid_str, "%d", table_proc[i]->pid);
 
-        for(int j = 0; pid_str[j] != '\0'; j++){
-            ecrit_car(lig, col + j, pid_str[j], FALSE, BLANC, NOIR);
+        int offset = 0; 
+        for (int j = 0; pid_str[j] != '\0'; j++) {
+            ecrit_car(lig, col + offset + j, pid_str[j], FALSE, BLANC, NOIR);
         }
+
+        offset += strlen(pid_str); 
 
         const char *separator = " | ";
-        int offset = 2;
-        for(int j = 0; separator[j] != '\0'; j++){
+        for (int j = 0; separator[j] != '\0'; j++) {
             ecrit_car(lig, col + offset + j, separator[j], FALSE, BLANC, NOIR);
         }
 
-        offset += 2;
+        offset += strlen(separator); 
 
-        // ecrire etat
+        // Ecrire Etat
         enum ETAT etat = table_proc[i]->etat;
-
         const char *etat_str = etat_noms[etat];
 
-        for(int j = 0; etat_str[j] != '\0'; j++){
-            ecrit_car(lig, col + offset + j, separator[j], FALSE, BLANC, NOIR);
+        for (int j = 0; etat_str[j] != '\0'; j++) {
+            ecrit_car(lig, col + offset + j, etat_str[j], FALSE, BLANC, NOIR);
         }
 
-        lig++;
+        lig++; // Prochain processus
     }
 }
-
 
 
 
