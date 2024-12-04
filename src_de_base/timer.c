@@ -16,6 +16,7 @@
 
 // variable global 
 static int ticks = 0; 
+static int total_seconds = 0; 
 
 
 /*Ecrit_temps prend en paramètre une chaine de caractères (ainsi que sa
@@ -79,13 +80,20 @@ void tic_PIT(void){
     ticks++; 
 
     char temps[LEN_TEMPS];
-    int total_seconds = ticks/CLOCKFREQ;
-    int heures = (total_seconds/3600)%24;
-    int minutes = (total_seconds/60)%60;
-    int secondes = total_seconds%60; 
 
-    sprintf(temps, "%02u:%02u:%02u", heures, minutes, secondes);
-    ecrit_temps(temps,LEN_TEMPS);
+    if(ticks == CLOCKFREQ){
+        total_seconds++;
+        int heures = (total_seconds/3600)%24;
+        int minutes = (total_seconds/60)%60;
+        int secondes = total_seconds%60; 
+
+        sprintf(temps, "%02u:%02u:%02u", heures, minutes, secondes);
+        ecrit_temps(temps,LEN_TEMPS);
+        ticks = 0;
+    }
+
+
+
     // ou
     // ecrit_temps(temps,strlen(temps));
 
