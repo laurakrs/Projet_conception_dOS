@@ -60,18 +60,26 @@ void proc1(void){
         mon_nom(), mon_pid());
         dors(2);
     }   
+    fin_processus();
 }
 
 void proc2(void){
-    uint32_t rev = (uint32_t)(nbr_secondes() + 3);
-    printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
-    dors(3);
+    for (int32_t i = 0; i < 4; i++) {
+        uint32_t rev = (uint32_t)(nbr_secondes() + 3);
+        printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
+        dors(3);
+    }
+    fin_processus();
+   
 }
 
 void proc3(void){
-    uint32_t rev = (uint32_t)(nbr_secondes() + 5);
-    printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
-    dors(5);
+    for (int32_t i = 0; i < 8; i++) {
+        uint32_t rev = (uint32_t)(nbr_secondes() + 5);
+        printf("[temps = %u] processus %s pid = %i . [Rev = %u]\n", nbr_secondes(), mon_nom(), mon_pid(), rev);
+        dors(5);
+    }
+    fin_processus();
 }
 
 void proc4(void){
@@ -200,6 +208,20 @@ void inserer_queue(ListProc *list, PROCESS *process){
     process->etat = ACTIVABLE;
 }
 
+void inserer_queue_zombie(ListProc *list, PROCESS *process){
+    process->suiv = NULL;   
+
+    if(list->queue){
+        list->queue->suiv = process;
+    }else{
+        list->tete = process;
+    }
+
+    list->queue = process;
+    
+    process->etat = ZOMBIE;
+}
+
 // Fonction d'extraction de la tete
 PROCESS *extraire_tete(ListProc *list){
 
@@ -237,6 +259,7 @@ void ordonnance(void){
 
     PROCESS *prev = current;
     current = next;
+    affiche_etats();
     ctx_sw(prev->tab_reg, next->tab_reg);
     
 }
@@ -254,6 +277,7 @@ void ordonnance_endormi(void){
 
         PROCESS *prev = current;
         current = next;
+        affiche_etats();
         ctx_sw(prev->tab_reg, next->tab_reg);
     }
 }
@@ -366,8 +390,7 @@ void inserer_endormi(ListProc *list, PROCESS *process){
 
 void fin_processus(){
     // Désactiver le processus actif (puisque c’est forcément lui qui l’appelle)
-    current->etat = ZOMBIE;
-    inserer_queue(&zombies, current);
+    inserer_queue_zombie(&zombies, current);
 
     // Passer la main au prochain processus activable.
     // Extraire la tete des activables
@@ -377,6 +400,7 @@ void fin_processus(){
 
     PROCESS *prev = current;
     current = next;
+    affiche_etats();
     ctx_sw(prev->tab_reg, next->tab_reg);
 
 }
